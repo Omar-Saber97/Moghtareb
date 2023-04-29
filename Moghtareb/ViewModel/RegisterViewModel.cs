@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Moghtareb.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Moghtareb.ViewModel
 {
-    public class RegisterViewModel
+    public class RegisterViewModel 
     {
 
         [Required]
@@ -25,7 +26,6 @@ namespace Moghtareb.ViewModel
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
 
-
-
+        public string RoleId { get; set; }
     }
 }

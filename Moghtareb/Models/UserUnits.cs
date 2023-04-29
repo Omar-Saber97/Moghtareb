@@ -8,9 +8,9 @@ namespace Moghtareb.Models
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity), Key]
         public int Id { get; set; }
-        public string UserId { get; set; }
-        public int UnitId { get; set; }
-        public bool IsOwner { get; set; }
+        public string? UserId { get; set; }
+        public int? UnitId { get; set; }
+        public bool? IsOwner { get; set; }
 
         [ForeignKey("UserId")]
         public virtual ApplicationUser? User { get; set; }

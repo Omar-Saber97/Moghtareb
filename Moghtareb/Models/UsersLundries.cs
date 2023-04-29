@@ -8,8 +8,8 @@ namespace Moghtareb.Models
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity), Key]
         public int Id { get; set; }
-        public string TenantId { get; set; }
-        public string LaundryId { get; set; }
+        public string? TenantId { get; set; }
+        public int? LaundryId { get; set; }
 
         [ForeignKey("TenantId")]
         public virtual ApplicationUser? Tenant { get; set; }

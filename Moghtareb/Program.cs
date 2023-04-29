@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Moghtareb.Data;
+using Moghtareb.Interfaces;
 using Moghtareb.Models;
+using Moghtareb.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +30,8 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireUppercase = false;
     options.Password.RequiredLength = 6;
 });
+
+builder.Services.AddTransient<IUnityOfWork, UnitOfWork>();
 
 var app = builder.Build();
 

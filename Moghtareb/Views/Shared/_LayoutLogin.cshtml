@@ -35,5 +35,12 @@
 
 <body class="login-img3-body">
     @RenderBody();
+
+
+    <!--===============================================================================================-->
+    <script src="~/vendor/jquery/jquery-3.2.1.min.js"></script>
+    <!--===============================================================================================-->
+    
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

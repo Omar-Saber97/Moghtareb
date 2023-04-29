@@ -16,18 +16,6 @@
             </div>
             <span asp-validation-for="Email" class="text-danger"></span>
 
-            <div class="input-group">
-                <span class="input-group-addon">Password</span>
-                <input asp-for="Password" class="form-control" placeholder="Password">
-            </div>
-            <span asp-validation-for="Password" class="text-danger"></span>
-
-            <div class="input-group">
-                <span class="input-group-addon">Confirm Password</span>
-                <input asp-for="ConfirmPassword" class="form-control" placeholder="ConfirmPassword">
-            </div>
-            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-
             <div style="display:flex">
                 <div style="width:50%; border:1px solid #007aff; margin:5px; padding:10px">
                     <input type="radio" name="RoleId" id="tentant" value="a1eaeb01-3683-43e1-8cr7-b731d0c655dz" checked />
@@ -39,12 +27,9 @@
                 </div>
             </div>
 
-            <button class="btn btn-primary btn-lg btn-block" type="submit">Next</button>
+            <button class="btn btn-primary btn-lg btn-block" type="submit">Register</button>
+            <a class="btn btn-info btn-lg btn-block" asp-action="Login" asp-controller="Account">Login</a>
+
         </div>
     </form>
 </div>
-
-@section Scripts{
-    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-}

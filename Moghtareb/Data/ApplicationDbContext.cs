@@ -22,5 +22,7 @@ namespace Moghtareb.Data
         public DbSet<UsersLundries> UsersLundries { get; set; }
         public DbSet<UsersMaintenance> UsersMaintenances { get; set; }
         public DbSet<UserUnits> UserUnits { get; set; }
+        public DbSet<City> cities { get; set; }
+        public DbSet<Governurate> Governurates { get; set; }
     }
 }

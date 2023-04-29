@@ -10,20 +10,20 @@ namespace Moghtareb.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity), Key]
         public int Id { get; set; }
         [ForeignKey("Tentant")]
-        public string TentantId { get; set; }
+        public string? TentantId { get; set; }
         [ForeignKey("Owner")]
-        public string OwnerId { get; set; }
-        public int BedsNumber { get; set; }
+        public string? OwnerId { get; set; }
+        public int? BedsNumber { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime FromDate { get; set; }
+        public DateTime? FromDate { get; set; }
         [DataType(DataType.Date)]
-        public DateTime ToDate { get; set; }
+        public DateTime? ToDate { get; set; }
 
         [InverseProperty("TentantLeeses")]
-        public virtual ApplicationUser Tentant { get; set; }
+        public virtual ApplicationUser? Tentant { get; set; }
         [InverseProperty("OwnerLeeses")]
-        public virtual ApplicationUser Owner { get; set; }
+        public virtual ApplicationUser? Owner { get; set; }
 
     }
 }

@@ -10,11 +10,11 @@ namespace Moghtareb.Models
     public class BaseEntity
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
-        public string? CreatedBy { get; set; }
+        public int Id { get; set; }
+        public string CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
-        public DateTime ModifiedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
         public bool IsDeleted { get; set; }
-        public DateTime DeletedDate { get; set; }
+        public DateTime? DeletedDate { get; set; }
     }
 }

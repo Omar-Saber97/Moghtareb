@@ -6,18 +6,30 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Moghtareb.Models;
+using Moghtareb.Data;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Moghtareb.Interfaces;
 
 namespace Moghtareb.Controllers
 {
     public class AccountController : Controller
     {
         #region Ctor
-        private readonly UserManager<IdentityUser> userManager;
-        private readonly SignInManager<IdentityUser> signInManager;
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ApplicationDbContext _context;
+        private readonly IUnityOfWork _unityOfWork;
+
+        public AccountController(UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            ApplicationDbContext context,
+            IUnityOfWork unityOfWork)
         {
-            this.userManager = userManager;
-            this.signInManager = signInManager;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _context = context;
+            _unityOfWork = unityOfWork;
         }
         #endregion
 
@@ -25,6 +37,7 @@ namespace Moghtareb.Controllers
         [HttpGet]
         public IActionResult Register()
         {
+            ViewBag.Roles = new SelectList(_context.Roles.ToList(), "Id", "Name");  
             return View();
         }
 
@@ -33,20 +46,93 @@ namespace Moghtareb.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser
+                TempData["Email"] = model.Email;
+                TempData["Password"] = model.Password;
+                if (model.RoleId == "a1eaeb01-3683-43e1-8cr7-b731d0c655dz")
+                    return RedirectToAction("TentantInformation", "Account");
+
+                return RedirectToAction("OwnerInformation", "Account");
+            }
+            return View(model);
+        }
+        #endregion
+
+        #region TentantInformation
+        [HttpGet]
+        public async Task<IActionResult> TentantInformation()
+        {
+            ViewBag.Govs = new SelectList(await _unityOfWork.Governurate.FindAllAsync(x => !x.IsDeleted), "Id", "Name");
+            ViewBag.Univ = new SelectList(await _unityOfWork.University.FindAllAsync(x => !x.IsDeleted), "Id", "Name");
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> TentantInformation(TentantViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser
                 {
-                    UserName = model.Email,
-                    Email = model.Email,
-                    EmailConfirmed = true
+                    UserName = TempData["Email"].ToString(),
+                    Email = TempData["Email"].ToString(),
+                    EmailConfirmed = true,
+                    IsTenant = true,
+                    JobTitle = model.JobTitle,
+                    MaritialStatus = model.MaritialStatus,
+                    FullName = model.FullName,
+                    DateOfBirth = model.DateOfBirth,
+                    PhoneNumber = model.MobileNumber,
+                    PhoneNumberConfirmed = true,
+                    CityId = model.CityId,
+                    GovernurateId = model.GovernurateId,
+                    IsSmoking = model.IsSmoking,
+                    UniversityId = model.UniversityId,
+                    FucltyId = model.FucltyId,
                 };
-                var result = await userManager.CreateAsync(user, model.Password);
+                var result = await _userManager.CreateAsync(user, TempData["Password"].ToString());
                 if (result.Succeeded)
                 {
-                    if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
-                    {
-                        return RedirectToAction("Index", "Home");
-                    }
-                    await signInManager.SignInAsync(user, isPersistent: false);
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return RedirectToAction("Index", "Home");
+                }
+                foreach (var err in result.Errors)
+                {
+                    ModelState.AddModelError("", err.Description);
+                }
+            }
+            return View(model);
+        }
+        #endregion
+
+        #region OwnerInformation
+        [HttpGet]
+        public async Task<IActionResult> OwnerInformation()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> OwnerInformation(OwnerViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser
+                {
+                    UserName = TempData["Email"].ToString(),
+                    Email = TempData["Email"].ToString(),
+                    EmailConfirmed = true,
+                    IsTenant = false,
+                    JobTitle = model.JobTitle,
+                    MaritialStatus = model.MaritialStatus,
+                    FullName = model.FullName,
+                    DateOfBirth = model.DateOfBirth,
+                    PhoneNumber = model.MobileNumber,
+                    PhoneNumberConfirmed = true,
+                };
+                var result = await _userManager.CreateAsync(user, TempData["Password"].ToString());
+                if (result.Succeeded)
+                {
+                    await _signInManager.SignInAsync(user, isPersistent: false);
                     return RedirectToAction("Index", "Home");
                 }
                 foreach (var err in result.Errors)
@@ -72,7 +158,7 @@ namespace Moghtareb.Controllers
             {
                 return View(model);
             }
-            var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
+            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
             if (result.Succeeded)
             {
                 return RedirectToAction("Index", "Home");
@@ -86,7 +172,7 @@ namespace Moghtareb.Controllers
         #region Logout
         public async Task<IActionResult> Logout()
         {
-            await signInManager.SignOutAsync();
+            await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
         #endregion
@@ -99,5 +185,19 @@ namespace Moghtareb.Controllers
             return View();
         }
         #endregion
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllGouvernrateCities(int gouvernrteId)
+        {
+            var allcities = await _unityOfWork.City.FindAllAsync(x => !x.IsDeleted && x.GovernurateId == gouvernrteId);
+            return new JsonResult(new { Succeded = true, Message = "", Content = allcities });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllFacultiesByUniversityId(int universityId)
+        {
+            var allfaculties = await _unityOfWork.Fuclty.FindAllAsync(x => !x.IsDeleted && x.UniversityId == universityId);
+            return new JsonResult(new { Succeded = true, Message = "", Content = allfaculties });
+        }
     }
 }

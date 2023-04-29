@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Moghtareb.Data;
 
@@ -11,9 +12,11 @@ using Moghtareb.Data;
 namespace Moghtareb.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230429135043_update-City-Governurate")]
+    partial class updateCityGovernurate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -717,9 +720,6 @@ namespace Moghtareb.Data.Migrations
                     b.Property<int?>("ServicesId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UniversityId")
-                        .HasColumnType("int");
-
                     b.HasIndex("CityId");
 
                     b.HasIndex("FucltyId");
@@ -727,8 +727,6 @@ namespace Moghtareb.Data.Migrations
                     b.HasIndex("GovernurateId");
 
                     b.HasIndex("ServicesId");
-
-                    b.HasIndex("UniversityId");
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
                 });
@@ -939,10 +937,6 @@ namespace Moghtareb.Data.Migrations
                         .WithMany()
                         .HasForeignKey("ServicesId");
 
-                    b.HasOne("Moghtareb.Models.University", "University")
-                        .WithMany("Users")
-                        .HasForeignKey("UniversityId");
-
                     b.Navigation("City");
 
                     b.Navigation("Fuclty");
@@ -950,8 +944,6 @@ namespace Moghtareb.Data.Migrations
                     b.Navigation("Governurate");
 
                     b.Navigation("Services");
-
-                    b.Navigation("University");
                 });
 
             modelBuilder.Entity("Moghtareb.Models.Laundry", b =>
@@ -1007,8 +999,6 @@ namespace Moghtareb.Data.Migrations
             modelBuilder.Entity("Moghtareb.Models.University", b =>
                 {
                     b.Navigation("Fuclties");
-
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Moghtareb.Models.ApplicationUser", b =>

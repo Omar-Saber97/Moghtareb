@@ -8,9 +8,9 @@ namespace Moghtareb.Models
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity), Key]
         public int Id { get; set; }
-        public string CommentContent { get; set; }
-        public DateTime CommentDate { get; set; }
-        public string PostId { get; set; }
+        public string? CommentContent { get; set; }
+        public DateTime? CommentDate { get; set; }
+        public int? PostId { get; set; }
 
         [ForeignKey("PostId")]
         public virtual Post? Post { get; set; }
